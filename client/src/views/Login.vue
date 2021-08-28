@@ -36,16 +36,11 @@ export default {
       window.FB.login(
         async (response) => {
           console.log("fb response", response.authResponse);
-          try {
-            const res = await axios({
-              method: "post",
-              url: "http://localhost:3000/user/details",
-              data: response.authResponse,
-            });
-            console.log(res);
-          } catch (error) {
-            console.log(error);
-          }
+          localStorage.setItem(
+            "fbResponse",
+            JSON.stringify(response.authResponse)
+          );
+          this.$router.push("/home");
         },
         {
           scope:
