@@ -2,23 +2,11 @@ const mongoose = require("mongoose");
 
 const conversationSchema = new mongoose.Schema(
   {
-    userId: {
-      type: String,
-      required: true,
-    },
-    pageId: {
-      type: String,
-      required: true,
-    },
     PSID: {
       type: String,
       required: true,
     },
     sender: {
-      id: {
-        type: String,
-        required: true,
-      },
       picture: {
         type: String,
       },
@@ -56,6 +44,20 @@ const conversationSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Conversation = mongoose.model("Conversation", userSchmea);
+conversationSchema.methods.addMessage = async function (message) {
+  const convo = this;
+  console.log(message);
+  const newMessage = {
+    mid: message.message.mid,
+    timestamp: message.timestamp,
+    message: message.message.text,
+    sender: false,
+  };
+
+  convo.messages = convo.messages.concat(newMessage);
+  await convo.save();
+};
+
+const Conversation = mongoose.model("Conversation", conversationSchema);
 
 module.exports = Conversation;

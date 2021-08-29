@@ -1,19 +1,75 @@
 const router = require("express").Router();
 const axios = require("axios");
+const Conversation = require("../models/conversation");
+const client = require("../redis");
+
+// helpers //
+
+const getPageAccessToken = () => {
+  return new Promise((resolve, reject) => {
+    client.GET("PAGE_ACCESS_TOKEN", function (error, result) {
+      if (error) reject(new Error("redis-set-error"));
+      resolve(result);
+    });
+  });
+};
+const getMessageSenderDetails = async (psId) => {
+  console.log("exe");
+  // const pgToken = await getPageAccessToken();
+  try {
+    const res = await axios.get(`https://graph.facebook.com/${psId}`, {
+      params: {
+        fields: "first_name,last_name,profile_pic",
+        access_token:
+          "EAAHxIDNghFoBAIZAkcJNX2aT4xFxoj2hTCZB0sMrPRn9gc342tuou1Hptndq7NlOHzZBGU0q59X6V0omKcwjFqfHjG9utwYbMQDSeC0Btc1IHbzh7PzV4YDOlXPueZCIdeEtPWyQPpM2lLs0A7kUZCZABZCByZBttGOPfMK3h8r76ZCKDWZCrzLMbtlaZA4tPGlXGRiNQPEVe7ZBnfZCB5bGDePHV",
+      },
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error.message);
+    if (error) throw new Error("get-user-details-failed");
+  }
+};
 
 // Creates the endpoint for our webhook
-router.post("/webhook", (req, res) => {
+router.post("/webhook", async (req, res) => {
   let body = req.body;
   console.log("EXECUTED");
   // Checks this is an event from a page subscription
   if (body.object === "page") {
     // Iterates over each entry - there may be multiple if batched
-    body.entry.forEach(function (entry) {
+
+    for (const entry of body.entry) {
       // Gets the message. entry.messaging is an array, but
       // will only ever contain one message, so we get index 0
       let webhook_event = entry.messaging[0];
-      console.log(webhook_event);
-    });
+
+      if (webhook_event.hasOwnProperty("message")) {
+        console.log("hey", webhook_event.sender.id);
+        const senderDetails = await getMessageSenderDetails(
+          webhook_event.sender.id
+        );
+        const convo = await Conversation.findOne({
+          PSID: webhook_event.sender.id,
+        });
+        if (convo) {
+          console.log("broken");
+          await convo.addMessage(webhook_event);
+          break;
+        }
+        const conversationObj = {
+          PSID: webhook_event.sender.id,
+          sender: {
+            picture: senderDetails.profile_pic,
+            firstName: senderDetails.first_name,
+            lastName: senderDetails.last_name,
+          },
+        };
+        const conversation = new Conversation(conversationObj);
+        await conversation.save();
+        await conversation.addMessage(webhook_event);
+      }
+    }
 
     // Returns a '200 OK' response to all requests
     res.status(200).send("EVENT_RECEIVED");

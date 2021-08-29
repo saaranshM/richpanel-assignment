@@ -6,6 +6,15 @@ const User = require("../models/user");
 const url = "https://graph.facebook.com/v11.0/";
 
 // helper //
+const getPageAccessToken = async (userId, accessToken) => {
+  const res = await axios.get(`https://graph.facebook.com/${userId}/accounts`, {
+    params: {
+      fields: "access_token",
+      access_token: accessToken,
+    },
+  });
+  return res.data.data[0].access_token;
+};
 
 const getLongLivedAccessToken = async (accessToken) => {
   try {
@@ -35,7 +44,11 @@ router.post("/login", async (req, res) => {
       },
     });
     const newToken = await getLongLivedAccessToken(body.accessToken);
-    client.SET(body.userID, newToken, (error, result) => {
+    const pageToken = await getPageAccessToken(body.userID, body.accessToken);
+    client.SET("USER_ACCESS_TOKEN", newToken, (error, result) => {
+      if (error) throw new Error("redis-set-error");
+    });
+    client.SET("PAGE_ACCESS_TOKEN", pageToken, (error, result) => {
       if (error) throw new Error("redis-set-error");
     });
 
