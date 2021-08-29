@@ -36,10 +36,7 @@ export default {
       window.FB.login(
         async (response) => {
           console.log("fb response", response.authResponse);
-          localStorage.setItem(
-            "fbResponse",
-            JSON.stringify(response.authResponse)
-          );
+          await this.$store.dispatch("getUserData", response.authResponse);
           this.$router.push("/home");
         },
         {

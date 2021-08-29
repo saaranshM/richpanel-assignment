@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const client = require("./redis");
+require("./db/mongoose");
 require("dotenv").config();
 
 const port = process.env.PORT || 3000;

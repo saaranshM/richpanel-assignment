@@ -25,16 +25,22 @@ const store = new Vuex.Store({
     },
   },
   actions: {
-    async getUserData({ commit }) {
-      let fbResponse = localStorage.getItem("fbResponse");
-      if (fbResponse) {
-        fbResponse = JSON.parse(fbResponse);
-        commit("SET_FB_RESPONSE", fbResponse);
+    async getUserData({ commit, state }, fbResponse) {
+      let user = localStorage.getItem("user");
+      if (user) {
+        commit("SET_USER_DATA", JSON.parse(user));
+        return;
       }
-      const userData = await axios.post(url + "/user/details", {
+      const userData = await axios.post(url + "/user/login", {
         data: fbResponse,
       });
+
+      localStorage.setItem("user", JSON.stringify(userData.data));
       commit("SET_USER_DATA", userData.data);
+    },
+    setUserFromStorage({ commit, state }) {
+      let user = JSON.parse(localStorage.getItem("user"));
+      commit("SET_USER_DATA", user);
     },
   },
 });

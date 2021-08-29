@@ -4,7 +4,7 @@ const axios = require("axios");
 // Creates the endpoint for our webhook
 router.post("/webhook", (req, res) => {
   let body = req.body;
-
+  console.log("EXECUTED");
   // Checks this is an event from a page subscription
   if (body.object === "page") {
     // Iterates over each entry - there may be multiple if batched

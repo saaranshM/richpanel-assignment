@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const axios = require("axios");
 const client = require("../redis");
+const User = require("../models/user");
 
 const url = "https://graph.facebook.com/v11.0/";
 
@@ -24,7 +25,7 @@ const getLongLivedAccessToken = async (accessToken) => {
   }
 };
 
-router.post("/details", async (req, res) => {
+router.post("/login", async (req, res) => {
   const body = req.body.data;
   try {
     const fbRes = await axios.get(url + body.userID, {
@@ -37,7 +38,24 @@ router.post("/details", async (req, res) => {
     client.SET(body.userID, newToken, (error, result) => {
       if (error) throw new Error("redis-set-error");
     });
-    res.status(200).json(fbRes.data);
+
+    const dbUser = await User.findOne({ userId: body.userID });
+
+    if (dbUser) {
+      return res.status(200).json(dbUser.toObject());
+    }
+    console.log(fbRes.data);
+    const userObj = {
+      name: fbRes.data.name,
+      firstName: fbRes.data.first_name,
+      lastName: fbRes.data.last_name,
+      userId: body.userID,
+      accessToken: newToken,
+    };
+
+    const user = new User(userObj);
+    await user.save();
+    res.status(201).json(user);
   } catch (error) {
     console.log(error.message);
     res.sendStatus(500);

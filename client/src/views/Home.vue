@@ -3,7 +3,7 @@
     <div>
       <h1 class="home_welcome">Welcome!</h1>
       <h2 class="home_hey">
-        Hey there {{ user.first_name }} we are getting things ready for you....
+        Hey there {{ user.firstName }} we are getting things ready for you....
       </h2>
       <lottie-vue-player
         :src="`https://assets2.lottiefiles.com/packages/lf20_tilm0top.json`"
@@ -49,8 +49,9 @@ export default {
     };
   },
   async mounted() {
-    await this.$store.dispatch("getUserData");
-    console.log(this.user);
+    if (!this.user) {
+      this.$store.dispatch("setUserFromStorage");
+    }
   },
   computed: {
     user() {
