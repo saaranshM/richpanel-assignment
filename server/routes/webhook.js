@@ -15,14 +15,16 @@ const getPageAccessToken = () => {
 };
 const getMessageSenderDetails = async (psId) => {
   console.log("exe");
-  // const pgToken = await getPageAccessToken();
+  const pgToken = await getPageAccessToken();
+
   try {
+    const params = {
+      fields: "first_name,last_name,profile_pic",
+      access_token: pgToken,
+    };
+    console.log(params);
     const res = await axios.get(`https://graph.facebook.com/${psId}`, {
-      params: {
-        fields: "first_name,last_name,profile_pic",
-        access_token:
-          "EAAHxIDNghFoBAIZAkcJNX2aT4xFxoj2hTCZB0sMrPRn9gc342tuou1Hptndq7NlOHzZBGU0q59X6V0omKcwjFqfHjG9utwYbMQDSeC0Btc1IHbzh7PzV4YDOlXPueZCIdeEtPWyQPpM2lLs0A7kUZCZABZCByZBttGOPfMK3h8r76ZCKDWZCrzLMbtlaZA4tPGlXGRiNQPEVe7ZBnfZCB5bGDePHV",
-      },
+      params,
     });
     return res.data;
   } catch (error) {
