@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Login from "../views/Login";
 import Home from "../views/Home";
+import Helpdesk from "../views/Helpdesk.vue";
 
 Vue.use(VueRouter);
 
@@ -24,6 +25,11 @@ const router = new VueRouter({
       path: "/login",
       name: "Login",
       component: Login,
+    },
+    {
+      path: "/helpdesk",
+      name: "Helpdesk",
+      component: Helpdesk,
     },
   ],
 });

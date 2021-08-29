@@ -1,0 +1,7 @@
+.helpdesk {
+  display: grid;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: [sidebar-start] 8rem [sidebar-end convos-start] 1fr [convos-end chat-start] 2.5fr [chat-end profile-start] 1fr [profile-end];
+}
