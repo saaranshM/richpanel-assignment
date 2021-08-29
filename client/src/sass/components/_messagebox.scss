@@ -1,0 +1,118 @@
+.msgbox {
+  display: grid;
+  grid-template-rows: 8rem 1fr;
+  border: 1px solid lightgray;
+  border-top: none;
+  &_header {
+    font-family: $font-primary;
+
+    grid-row: 1 / 2;
+    border-bottom: 1px solid lightgray;
+    display: flex;
+    align-items: center;
+
+    &-text {
+      margin-left: 1.5rem;
+      font-size: 2.4rem;
+      font-weight: 600;
+    }
+  }
+
+  &_main {
+    width: 100%;
+    height: 100%;
+    background-color: #f1f1f1;
+
+    &-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 100%;
+      height: 100%;
+    }
+
+    &-conversation {
+      height: 85%;
+      margin-top: 4rem;
+      padding: 0 5%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    &-input {
+      font-family: $font-primary;
+      position: relative;
+      bottom: 3.6rem;
+      height: 4rem;
+      border-radius: 4px;
+      padding: 1rem;
+      border: 1px solid $color-primary-light;
+      left: 0;
+      right: 0;
+      margin-left: auto;
+      margin-right: auto;
+      width: 90%;
+      transition: all 0.3s;
+
+      &:focus {
+        outline: 2px solid $color-primary-light;
+      }
+    }
+  }
+}
+
+.msg {
+  &-row {
+    margin-bottom: 2rem;
+    display: grid;
+    grid-template-columns: 70%;
+    font-family: $font-primary;
+  }
+
+  &-text {
+    padding: 1.5rem 1.4rem;
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+    background-color: #ffffff;
+    box-shadow: 10px 5px 5px rgba(#d1d1d1, 0.5);
+  }
+
+  &-created {
+    font-size: 1.3rem;
+    color: #928f8f;
+  }
+
+  &-you {
+    justify-content: end;
+    justify-items: end;
+  }
+  &-other {
+    justify-items: start;
+  }
+  &-you &-text {
+    border-radius: 1.4rem 1.4rem 0 1.4rem;
+  }
+  &-other &-text {
+    border-radius: 1.4rem 1.4rem 1.4rem 0;
+  }
+
+  &-content {
+    display: flex;
+    align-items: center;
+  }
+  &-you &-content {
+    flex-direction: row-reverse;
+  }
+  &-you &-content > img {
+    margin-left: 1rem;
+  }
+  &-other &-content > img {
+    margin-right: 1rem;
+  }
+  &-content > img {
+    width: 4rem;
+    margin-top: 0.5;
+    border-radius: 50%;
+  }
+}
