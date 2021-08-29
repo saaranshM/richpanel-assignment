@@ -1,0 +1,105 @@
+.convo {
+  display: grid;
+  grid-template-rows: 8rem 1fr;
+
+  &_header {
+    grid-row: 1 / 2;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    // box-shadow: 0px 8px 6px -6px lightgrey;
+    border-bottom: 1px solid lightgray;
+
+    &-content {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      margin-left: 1.5rem;
+    }
+
+    &-heading {
+      font-family: $font-primary;
+      font-weight: 500;
+      font-size: 2.6rem;
+    }
+
+    &-icon {
+      margin-right: 1.2rem;
+      width: 2.5rem;
+      transform: scaleX(-1);
+      fill: lightslategray;
+    }
+    &-refresh {
+      margin-right: 1.2rem;
+      width: 3.5rem;
+      transform: scaleX(-1);
+      fill: lightslategray;
+      cursor: pointer;
+    }
+  }
+
+  &_main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+  }
+
+  &_card {
+    display: flex;
+    flex-direction: column;
+    height: 14.5rem;
+    width: 100%;
+    border-bottom: 1px solid lightgray;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: #faf8f8;
+    }
+
+    &-top {
+      font-family: $font-primary;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+
+      margin-top: 1rem;
+    }
+    &-details {
+      display: flex;
+      flex-direction: column;
+    }
+    &-name {
+      font-size: 1.9rem;
+      font-weight: 600;
+    }
+    &-type,
+    &-time {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: lightslategray;
+    }
+
+    &-bottom {
+      font-family: $font-primary;
+      margin-top: 2rem;
+    }
+    &-latest {
+      font-size: 1.6rem;
+      color: gray;
+
+      &-text {
+        width: 43rem;
+        font-size: 1.3rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+}
