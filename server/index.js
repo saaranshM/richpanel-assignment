@@ -10,6 +10,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/user", require("./routes/posts"));
+app.use("/api", require("./routes/webhook"));
 
 process.on("SIGINT", cleanup);
 process.on("SIGTERM", cleanup);
