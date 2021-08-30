@@ -1,6 +1,6 @@
 const client = require("../redis");
 
-const getPageAccessToken = () => {
+const getPageAccessTokenFromRedis = () => {
   return new Promise((resolve, reject) => {
     client.GET("PAGE_ACCESS_TOKEN", function (error, result) {
       if (error) reject(new Error("redis-set-error"));
@@ -9,4 +9,4 @@ const getPageAccessToken = () => {
   });
 };
 
-module.exports = getPageAccessToken;
+module.exports = getPageAccessTokenFromRedis;

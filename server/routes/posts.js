@@ -3,11 +3,20 @@ const axios = require("axios");
 const client = require("../redis");
 const User = require("../models/user");
 const Conversation = require("../models/conversation");
-const getPageAccessToken = require("../helpers/getPageAccessToken");
-const got = require("got");
+const getPageAccessTokenFromRedis = require("../helpers/getPageAccessToken");
 const fetch = require("node-fetch");
 
 const url = "https://graph.facebook.com/v11.0/";
+
+const getPageAccessToken = async (userId, accessToken) => {
+  const res = await axios.get(`https://graph.facebook.com/${userId}/accounts`, {
+    params: {
+      fields: "access_token",
+      access_token: accessToken,
+    },
+  });
+  return res.data.data[0].access_token;
+};
 
 const getLongLivedAccessToken = async (accessToken) => {
   try {
@@ -38,11 +47,18 @@ router.post("/login", async (req, res) => {
     });
     const newToken = await getLongLivedAccessToken(body.accessToken);
     const pageToken = await getPageAccessToken(body.userID, body.accessToken);
+    console.log(newToken, pageToken);
     client.SET("USER_ACCESS_TOKEN", newToken, (error, result) => {
-      if (error) throw new Error("redis-set-error");
+      if (error) {
+        console.log(error.message);
+        throw new Error("redis-set-error");
+      }
     });
     client.SET("PAGE_ACCESS_TOKEN", pageToken, (error, result) => {
-      if (error) throw new Error("redis-set-error");
+      if (error) {
+        console.log(error.message);
+        throw new Error("redis-set-error");
+      }
     });
 
     const dbUser = await User.findOne({ userId: body.userID });
@@ -70,7 +86,7 @@ router.post("/login", async (req, res) => {
 
 router.post("/send-message", async (req, res) => {
   const body = req.body;
-  const accessToken = await getPageAccessToken();
+  const accessToken = await getPageAccessTokenFromRedis();
   console.log(body);
   try {
     const fRes = await fetch(
@@ -107,6 +123,20 @@ router.post("/send-message", async (req, res) => {
     res.sendStatus(201);
   } catch (error) {
     console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+router.get("/conversations", async (req, res) => {
+  try {
+    const accessToken = await getPageAccessToken();
+    const allConvos = await Conversation.find({});
+    res.status(200).json({
+      convos: allConvos,
+      pageAccessToken: accessToken,
+    });
+  } catch (error) {
+    console.log(error.message);
     res.sendStatus(500);
   }
 });

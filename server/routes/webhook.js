@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const axios = require("axios");
 const Conversation = require("../models/conversation");
-const getPageAccessToken = require("../helpers/getPageAccessToken");
+const getPageAccessTokenFromRedis = require("../helpers/getPageAccessToken");
 
 // helpers //
 
@@ -15,7 +15,7 @@ const getPageAccessToken = require("../helpers/getPageAccessToken");
 // };
 const getMessageSenderDetails = async (psId) => {
   console.log("exe");
-  const pgToken = await getPageAccessToken();
+  const pgToken = await getPageAccessTokenFromRedis();
 
   try {
     const params = {
@@ -50,6 +50,7 @@ router.post("/webhook", async (req, res) => {
         const senderDetails = await getMessageSenderDetails(
           webhook_event.sender.id
         );
+        console.log(senderDetails);
         const convo = await Conversation.findOne({
           PSID: webhook_event.sender.id,
         });
@@ -66,6 +67,7 @@ router.post("/webhook", async (req, res) => {
             lastName: senderDetails.last_name,
           },
         };
+        console.log(conversationObj);
         const conversation = new Conversation(conversationObj);
         await conversation.save();
         await conversation.addMessage(webhook_event, false);

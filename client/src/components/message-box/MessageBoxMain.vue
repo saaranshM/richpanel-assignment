@@ -8,7 +8,7 @@
 
             <div class="msg_text-content">
               <div class="msg-text">
-                Lorem ipsum, dolor sit?
+                How good is the product?
               </div>
               <div class="msg-created">
                 Amit RG | Apr 25
@@ -22,10 +22,10 @@
 
             <div class="msg_text-content">
               <div class="msg-text">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit?
+                It is very durable!
               </div>
               <div class="msg-created">
-                Amit RG | Apr 25
+                Admin | Apr 25
               </div>
             </div>
           </div>
@@ -36,7 +36,7 @@
 
             <div class="msg_text-content">
               <div class="msg-text">
-                Lorem ipsum, dolor sit?
+                How much is the cost?
               </div>
               <div class="msg-created">
                 Amit RG | Apr 25
@@ -50,10 +50,10 @@
 
             <div class="msg_text-content">
               <div class="msg-text">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit?
+                Its Rs.2500
               </div>
               <div class="msg-created">
-                Amit RG | Apr 25
+                Admin | Apr 25
               </div>
             </div>
           </div>
@@ -64,7 +64,7 @@
 
             <div class="msg_text-content">
               <div class="msg-text">
-                Lorem ipsum, dolor sit?
+                Delivery?
               </div>
               <div class="msg-created">
                 Amit RG | Apr 25
@@ -78,10 +78,10 @@
 
             <div class="msg_text-content">
               <div class="msg-text">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit?
+                Within 2 days.
               </div>
               <div class="msg-created">
-                Amit RG | Apr 25
+                Admin | Apr 25
               </div>
             </div>
           </div>

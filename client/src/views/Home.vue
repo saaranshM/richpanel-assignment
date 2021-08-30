@@ -52,6 +52,9 @@ export default {
     if (!this.user) {
       this.$store.dispatch("setUserFromStorage");
     }
+    setTimeout(() => {
+      this.$router.push("/helpdesk");
+    }, 2000);
   },
   computed: {
     user() {
