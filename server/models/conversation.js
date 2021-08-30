@@ -44,14 +44,14 @@ const conversationSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-conversationSchema.methods.addMessage = async function (message) {
+conversationSchema.methods.addMessage = async function (message, sender) {
   const convo = this;
   console.log(message);
   const newMessage = {
     mid: message.message.mid,
     timestamp: message.timestamp,
     message: message.message.text,
-    sender: false,
+    sender: sender,
   };
 
   convo.messages = convo.messages.concat(newMessage);

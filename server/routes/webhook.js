@@ -1,18 +1,18 @@
 const router = require("express").Router();
 const axios = require("axios");
 const Conversation = require("../models/conversation");
-const client = require("../redis");
+const getPageAccessToken = require("../helpers/getPageAccessToken");
 
 // helpers //
 
-const getPageAccessToken = () => {
-  return new Promise((resolve, reject) => {
-    client.GET("PAGE_ACCESS_TOKEN", function (error, result) {
-      if (error) reject(new Error("redis-set-error"));
-      resolve(result);
-    });
-  });
-};
+// const getPageAccessToken = () => {
+//   return new Promise((resolve, reject) => {
+//     client.GET("PAGE_ACCESS_TOKEN", function (error, result) {
+//       if (error) reject(new Error("redis-set-error"));
+//       resolve(result);
+//     });
+//   });
+// };
 const getMessageSenderDetails = async (psId) => {
   console.log("exe");
   const pgToken = await getPageAccessToken();
@@ -22,7 +22,6 @@ const getMessageSenderDetails = async (psId) => {
       fields: "first_name,last_name,profile_pic",
       access_token: pgToken,
     };
-    console.log(params);
     const res = await axios.get(`https://graph.facebook.com/${psId}`, {
       params,
     });
@@ -69,7 +68,7 @@ router.post("/webhook", async (req, res) => {
         };
         const conversation = new Conversation(conversationObj);
         await conversation.save();
-        await conversation.addMessage(webhook_event);
+        await conversation.addMessage(webhook_event, false);
       }
     }
 

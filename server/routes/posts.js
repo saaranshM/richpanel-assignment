@@ -2,19 +2,12 @@ const router = require("express").Router();
 const axios = require("axios");
 const client = require("../redis");
 const User = require("../models/user");
+const Conversation = require("../models/conversation");
+const getPageAccessToken = require("../helpers/getPageAccessToken");
+const got = require("got");
+const fetch = require("node-fetch");
 
 const url = "https://graph.facebook.com/v11.0/";
-
-// helper //
-const getPageAccessToken = async (userId, accessToken) => {
-  const res = await axios.get(`https://graph.facebook.com/${userId}/accounts`, {
-    params: {
-      fields: "access_token",
-      access_token: accessToken,
-    },
-  });
-  return res.data.data[0].access_token;
-};
 
 const getLongLivedAccessToken = async (accessToken) => {
   try {
@@ -71,6 +64,49 @@ router.post("/login", async (req, res) => {
     res.status(201).json(user);
   } catch (error) {
     console.log(error.message);
+    res.sendStatus(500);
+  }
+});
+
+router.post("/send-message", async (req, res) => {
+  const body = req.body;
+  const accessToken = await getPageAccessToken();
+  console.log(body);
+  try {
+    const fRes = await fetch(
+      `https://graph.facebook.com/v11.0/me/messages?access_token=${accessToken}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({
+          messaging_type: "RESPONSE",
+          recipient: {
+            id: body.psid,
+          },
+          message: {
+            text: body.message,
+          },
+        }),
+      }
+    );
+    if (fRes.ok) {
+      const convo = await Conversation.findOne({ PSID: body.psid });
+      const data = await fRes.json();
+      const message = {
+        message: {
+          mid: data.message_id,
+          text: body.message,
+        },
+        timestamp: new Date().getTime(),
+      };
+      await convo.addMessage(message, true);
+      console.log(data);
+    }
+    res.sendStatus(201);
+  } catch (error) {
+    console.log(error);
     res.sendStatus(500);
   }
 });
